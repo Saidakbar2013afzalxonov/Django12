@@ -8,7 +8,7 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = (
          'username','id', 'email', 'first_name', 'last_name',
-         'slug'
+         'slug','phone_number'
     )
 
     list_filter = ( 'is_superuser', 'is_staff', 'is_active')
@@ -26,6 +26,7 @@ class CustomUserAdmin(UserAdmin):
                 'password2',
                 'first_name',
                 'last_name',
+                'phone_number',
             ),
         }),
     )
