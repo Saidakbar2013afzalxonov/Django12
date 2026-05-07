@@ -1,22 +1,19 @@
-
 from django.shortcuts import render
-
-# Create your views here.
-
-import email
+from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from . import models
 from django.shortcuts import redirect
 import uuid
 
+User=get_user_model()
 # Create your views here.
 
 def run(request):
-    users=models.CustomUser.objects.all() 
+    users=User.objects.all() 
     return render(request, 'index.html',context={'users':users})
 
 def user_view(request,slug):
-    user=models.CustomUser.objects.get(slug=slug)
+    user=User.objects.get(slug=slug)
     return render(request,'user_view.html',{'user':user})
 
 def create_user(request):
@@ -25,7 +22,7 @@ def create_user(request):
         surename=request.POST.get('last_name')
         picture=request.FILES.get('picture')
 
-        models.CustomUser.objects.create(
+        user=User.objects.create(
             first_name=name,
             last_name=surename,
             email=f"{name}{surename}{str(uuid.uuid4())[:6]}@gmail.com",
