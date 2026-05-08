@@ -12,11 +12,14 @@ Create User
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <label>First Name</label>
+        <label>Ism</label>
         <input type="text" name="first_name">
 
-        <label>Last Name</label>
+        <label>Familiya</label>
         <input type="text" name="last_name">
+
+        <label>Telefon raqam</label>
+        <input type="text" name="phone_number">
 
         <label>Picture</label>
         <input type="file" name="picture">
@@ -24,6 +27,12 @@ Create User
         <button type="submit" class="btn-create">
             Create
         </button>
+
+        <a href="{% url 'user_list' %}">
+            <button type="button" class="btn-cancel">
+                Cancel
+            </button>
+        </a>
 
     </form>
 

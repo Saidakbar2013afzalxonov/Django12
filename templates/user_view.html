@@ -14,6 +14,12 @@ User Detail
 
     <h1>{{ user.first_name }} {{ user.last_name }}</h1>
 
+    <p><b>Email:</b> {{ user.email }}</p>
+
+    <p><b>Telefon raqam:</b> {{ user.phone_number }}</p>
+
+    <p><b>Slug:</b> {{ user.slug }}</p>
+
     <br>
 
     <a href="{% url 'update_user' user.slug %}">
