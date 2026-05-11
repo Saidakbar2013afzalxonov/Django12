@@ -33,7 +33,7 @@ def create_user(request):
 
 
 def update_user(request, slug):
-    user = models.CustomUser.objects.get(slug=slug)
+    user = User.objects.get(slug=slug)
 
     if request.POST:
         user.first_name = request.POST.get('first_name')
@@ -48,7 +48,7 @@ def update_user(request, slug):
     return render(request, 'update_user.html', {'user': user})
 
 def delete_user(request, slug):
-    user = models.CustomUser.objects.get(slug=slug)
+    user = User.objects.get(slug=slug)
 
     if request.POST:
         user.delete()
