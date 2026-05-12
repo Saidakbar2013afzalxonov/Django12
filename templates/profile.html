@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+<h1>Profile</h1>
+
+{% if user.picture %}
+<img src="{{ user.picture.url }}" width="120">
+{% endif %}
+
+<p><b>Ism:</b> {{ user.first_name }}</p>
+<p><b>Familiya:</b> {{ user.last_name }}</p>
+<p><b>Email:</b> {{ user.email }}</p>
+<p><b>Telefon:</b> {{ user.phone_number }}</p>
+<p><b>Slug:</b> {{ user.slug }}</p>
+
+<br>
+
+<a href="{% url 'logout' %}">
+    <button class="btn-update" type="submit">Logout</button>
+</a>
+
+<a href="{% url 'profile' %}">
+    <button class="btn-delete" type="submit">Orqaga</button>
+</a>
+{% endblock %}

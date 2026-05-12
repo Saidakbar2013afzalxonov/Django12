@@ -4,17 +4,20 @@ from django.shortcuts import render
 from . import models
 from django.shortcuts import redirect
 import uuid
+from .forms import RegisterForm, LoginForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 
 User=get_user_model()
 # Create your views here.
 
 def run(request):
     users=User.objects.all() 
-    return render(request, 'index.html',context={'users':users})
+    return render(request, 'home.html',context={'users':users})
 
 def user_view(request,slug):
     user=User.objects.get(slug=slug)
-    return render(request,'user_view.html',{'user':user})
+    return render(request,'index.html',{'user':user})
 
 def create_user(request):
     if request.POST:
@@ -55,3 +58,54 @@ def delete_user(request, slug):
         return redirect('/')
 
     return render(request, 'delete_user.html', {'user': user})
+
+#LOGIN, LOGOUT, REGISTER VIEWS
+
+def home_view(request):
+    return render(request, 'profile.html')
+
+def register_view(request):
+    form = RegisterForm()
+    
+    if request.method == "POST":
+        form = RegisterForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/')
+        else:
+            print(form.errors)
+    else:
+        form = RegisterForm()
+
+    return render(request, 'register.html', {'form': form})
+
+
+
+def login_view(request):
+    form = LoginForm()
+
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+
+    return render(request, 'login.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+
+
+@login_required
+
+def home_view(request):
+    return render(request, 'home.html')
+
+def profile_view(request):
+    return render(request, 'profile.html')
