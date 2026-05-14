@@ -74,8 +74,6 @@ def register_view(request):
             user = form.save()
             login(request, user)
             return redirect('/')
-        else:
-            print(form.errors)
     else:
         form = RegisterForm()
 
@@ -83,30 +81,30 @@ def register_view(request):
 
 
 
-def login_view(request):
-    form = LoginForm()
+# def login_view(request):
+#     form = LoginForm()
 
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
+#     if request.method == 'POST':
+#         form = LoginForm(request, data=request.POST)
 
-        if form.is_valid():
-            email = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(
-               request,
-               email=email,
-               password=password
-            )
+#         if form.is_valid():
+#             email = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             user = authenticate(
+#                request,
+#                email=email,
+#                password=password
+#             )
 
-            if user is not None:
-                login(request, user)
-                return redirect('home')
+#             if user is not None:
+#                 login(request, user)
+#                 return redirect('home')
 
-    return render(request,'login.html',{'form': form})
+#     return render(request,'login.html',{'form': form})
 
-def logout_view(request):
-    logout(request)
-    return redirect('/')
+# def logout_view(request):
+#     logout(request)
+#     return redirect('/')
 
 
 @login_required

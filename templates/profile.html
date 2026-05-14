@@ -18,12 +18,15 @@ Profile
 <p><b>Slug:</b> {{ user.slug }}</p>
 
 <br>
-
-<a href="{% url 'logout' %}">
-    <button class="btn-update" type="submit">Logout</button>
-</a>
+<div style="display:inline-block; gap: 10px;">
+    <form action="{% url 'logout' %}" method="POST">
+        {% csrf_token %}
+        <button class="btn-update" type="submit">Logout</button>
+    </form>
+</div>
 
 <a href="{% url 'profile' %}">
-    <button class="btn-delete" type="submit">Orqaga</button>
+    <button class="btn-delete" type="button">Orqaga</button>
 </a>
+
 {% endblock %}
