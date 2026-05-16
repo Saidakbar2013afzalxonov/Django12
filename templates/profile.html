@@ -29,4 +29,12 @@ Profile
     <button class="btn-delete" type="button">Orqaga</button>
 </a>
 
+<a href="{% url 'update_user' user.slug %}">
+    <button class="btn-create" type="button">Update</button>
+</a>
+
+<a href="{% url 'delete_account' %}">
+    <button class="btn-view" type="button">Delete Account</button>
+</a>
+
 {% endblock %}

@@ -25,6 +25,9 @@ Update User
         <label>Email</label>
         <input type="text" name="email" value="{{ user.email }}">
 
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Eskisini ko'rish iloji yo'q, yangi parolni kiriting">
+
         <label>Rasm</label>
         <input type="file" name="picture">
 
@@ -38,7 +41,7 @@ Update User
             Update
         </button>
 
-        <a href="{% url 'user_list' %}">
+        <a href="{% url 'home' %}">
             <button type="button" class="btn-cancel">
                 Cancel
             </button>

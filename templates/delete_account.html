@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Akkauntni o‘chirish</h2>
+
+<p>Rostdan ham akkauntingizni o‘chirmoqchimisiz?</p>
+<div style="display: flex; gap: 10px;">
+<form method="POST">
+    {% csrf_token %}
+    <button class="btn-delete" type="submit">O'chirish</button>
+</form>
+
+<a href="{% url 'profile' %}">
+    <button class="btn-update" type="button">Bekor qilish</button>
+</a>
+</div>
+{% endblock %}

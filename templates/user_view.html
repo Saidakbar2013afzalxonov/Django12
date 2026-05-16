@@ -12,12 +12,10 @@ User Detail
         <img src="{{ user.picture.url }}" width="250">
     {% endif %}
 
-    <h1>{{ user.first_name }} {{ user.last_name }}</h1>
-
+    <p><b>Ism:</b> {{ user.first_name }}</p>
+    <p><b>Familiya:</b> {{ user.last_name }}</p>
     <p><b>Email:</b> {{ user.email }}</p>
-
-    <p><b>Telefon raqam:</b> {{ user.phone_number }}</p>
-
+    <p><b>Telefon:</b> {{ user.phone_number }}</p>
     <p><b>Slug:</b> {{ user.slug }}</p>
 
     <br>
@@ -32,7 +30,7 @@ User Detail
 
     <br>
     
-    <a href="{% url 'user_list' %}">
+    <a href="{% url 'admin_panel' %}">
         <button class="btn-cancel">Bosh sahifaga qaytish</button>
     </a>
 

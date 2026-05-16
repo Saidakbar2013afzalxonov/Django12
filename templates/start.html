@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Start
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <h1>Xush kelibsiz</h1>
+    <br>
+    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+    <br>
+    <div style="display: flex; gap: 10px;">
+    <a href="{% url 'login' %}">
+        <button class="btn-view">Login</button>
+    </a>
+
+    <a href="{% url 'register' %}">
+        <button class="btn-delete">Register</button>
+    </a>
+
+    <a href="{% url 'home' %}">
+            <button class="btn-update">
+                Profile
+            </button>
+        </a>
+
+    {% if user.is_superuser %}
+            <a href="{% url 'admin_panel' %}">
+                <button class="btn-create">
+                    Admin panel
+                </button>
+            </a>
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+{% endblock %}

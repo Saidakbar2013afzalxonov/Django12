@@ -7,17 +7,29 @@ import uuid
 from .forms import RegisterForm, LoginForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 
 User=get_user_model()
 # Create your views here.
 
 def run(request):
     users=User.objects.all() 
-    return render(request, 'home.html',context={'users':users})
+    return render(request, 'start.html',context={'users':users})
+
+def users_list(request):
+    users=User.objects.all() 
+    return render(request, 'admin.html',{'users':users})
 
 def user_view(request,slug):
-    user=User.objects.get(slug=slug)
-    return render(request,'index.html',{'user':user})
+    one_user=User.objects.get(slug=slug)
+    if request.method == "POST":
+        one_user = request.user
+        one_user.first_name = request.POST.get("first_name")
+        one_user.last_name = request.POST.get("last_name")
+        one_user.phone_number = request.POST.get("phone_number")
+        one_user.email = request.POST.get("email")
+
+    return render(request,'user_view.html',{'user':one_user})
 
 def create_user(request):
     if request.POST:
@@ -106,6 +118,31 @@ def register_view(request):
 #     logout(request)
 #     return redirect('/')
 
+def update_user_with_password(request, slug):
+    one_user = User.objects.get(slug=slug)
+    if request.method == "POST":
+        one_user = request.user
+
+        one_user.first_name = request.POST.get("first_name")
+        one_user.last_name = request.POST.get("last_name")
+        one_user.phone_number = request.POST.get("phone_number")
+        one_user.email = request.POST.get("email")
+
+
+        if request.FILES.get("picture"):
+            one_user.picture = request.FILES.get("picture")
+
+        new_password = request.POST.get("password")
+        if new_password:
+            one_user.set_password(new_password)
+            update_session_auth_hash(request, one_user)
+
+        one_user.save()
+
+        return redirect("profile")
+
+    return render(request, "update_user.html")
+
 
 @login_required
 
@@ -114,3 +151,10 @@ def home_view(request):
 
 def profile_view(request):
     return render(request, 'profile.html')
+
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()      
+        return redirect('login')   
+    return render(request, 'delete_account.html')

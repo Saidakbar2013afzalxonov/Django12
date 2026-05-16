@@ -9,11 +9,16 @@ Home
 {% block content %}
 
 <div class="card">
-
+    <div style="display: flex; gap: 10px;">
     <h1>Xush kelibsiz</h1>
+    {% if user.is_superuser %}
+        <h1>Admin!</h1>
+    {% endif %}
+    </div>
     <br>
     <h2>{{ user.first_name }} {{ user.last_name }}</h2>
     <br>
+    
 
     {% if user.is_authenticated %}
 
@@ -40,10 +45,18 @@ Home
             </form>
         </div>
 
+        {% if user.is_superuser %}
+            <a href="{% url 'admin_panel' %}">
+                <button class="btn-create">
+                    Admin panel
+                </button>
+            </a>
+        {% endif %}
 
+
+</div>
 
     {% endif %}
 
-</div>
 
 {% endblock %}
