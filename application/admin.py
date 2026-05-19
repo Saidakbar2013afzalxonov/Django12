@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import CustomUser, UserProfile
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
     model = CustomUser
@@ -14,6 +14,9 @@ class CustomUserAdmin(admin.ModelAdmin):
 
     search_fields = ('email', 'first_name', 'last_name')
     readonly_fields = ('slug',)
+
+
+admin.site.register(UserProfile)
 
 # Register your models here.
 

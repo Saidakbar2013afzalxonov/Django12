@@ -18,4 +18,5 @@ urlpatterns=[
     path('home/', views.profile_view, name='home'), # bu aslida profile, home emas
     path('admin_panel/', views.users_list, name='admin_panel'),
     path('delete_account/', views.delete_account, name='delete_account'),
+    path('admin/', views.users_list, name='admin'),
 ]

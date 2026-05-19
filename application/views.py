@@ -53,6 +53,7 @@ def update_user(request, slug):
     if request.POST:
         user.first_name = request.POST.get('first_name')
         user.last_name = request.POST.get('last_name')
+        user.phone_number = request.POST.get('phone_number')
 
         if request.FILES.get('picture'):
             user.picture = request.FILES.get('picture')
@@ -73,8 +74,12 @@ def delete_user(request, slug):
 
 #LOGIN, LOGOUT, REGISTER VIEWS
 
-def home_view(request):
-    return render(request, 'profile.html')
+def home_view(request, slug):
+    user = User.objects.get(slug=slug)
+
+    if request.POST:
+        user.phone_number = request.POST.get('phone_number')
+    return render(request, 'profile.html', {'user': user})
 
 def register_view(request):
     form = RegisterForm()
@@ -150,7 +155,8 @@ def home_view(request):
     return render(request, 'home.html')
 
 def profile_view(request):
-    return render(request, 'profile.html')
+    profile =  request.user.profile
+    return render(request, 'profile.html', {'profile': profile, 'user': request.user})
 
 def delete_account(request):
     if request.method == 'POST':

@@ -16,6 +16,17 @@ Profile
 <p><b>Email:</b> {{ user.email }}</p>
 <p><b>Telefon:</b> {{ user.phone_number }}</p>
 <p><b>Slug:</b> {{ user.slug }}</p>
+<p><b>Active:</b> {% if user.is_active %}Ha{% else %}Yo'q{% endif %}</p>
+<p><b>Staff:</b> {% if user.is_staff %}Ha{% else %}Yo'q{% endif %}</p>
+<p><b>Superuser:</b> {% if user.is_superuser %}Ha{% else %}Yo'q{% endif %}</p>
+
+{% if profile.bio %}
+<p><b>Bio:</b> {{ profile.bio }}</p>
+{% endif %}
+
+{% if profile.website %}
+<p><b>Website:</b> <a href="{{ profile.website }}" >{{ profile.website }}</a></p>
+{% endif %}
 
 <br>
 <div style="display:inline-block; gap: 10px;">

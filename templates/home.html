@@ -48,6 +48,12 @@ Home
         {% if user.is_superuser %}
             <a href="{% url 'admin_panel' %}">
                 <button class="btn-create">
+                    Users List
+                </button>
+            </a>
+
+            <a href="{% url 'admin' %}">
+                <button class="btn-view ">
                     Admin panel
                 </button>
             </a>
