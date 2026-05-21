@@ -8,6 +8,8 @@ from .forms import RegisterForm, LoginForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from .forms import ProfileUpdateForm, UserProfileUpdateForm
+from django.contrib.auth import logout as logaut
 
 User=get_user_model()
 # Create your views here.
@@ -151,16 +153,46 @@ def update_user_with_password(request, slug):
 
 @login_required
 
-def home_view(request):
+def home_view_1(request):
     return render(request, 'home.html')
 
+@login_required
+
+def abc(request):
+    return render(request, 'profile.html')
+
+@login_required
 def profile_view(request):
     profile =  request.user.profile
-    return render(request, 'profile.html', {'profile': profile, 'user': request.user})
+    return render(request, 'profile_view.html', {'profile': profile, 'user': request.user})
 
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
-        user.delete()      
-        return redirect('login')   
-    return render(request, 'delete_account.html')
+        user.delete()
+        return redirect('login')
+    return render(request, 'delete_profile.html')
+
+@login_required
+def update_profile(request):
+    user_form = ProfileUpdateForm(instance=request.user)
+    profile_form = UserProfileUpdateForm(instance=request.user.profile)
+    if request.method == 'POST':
+        user_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        profile_form = UserProfileUpdateForm(request.POST, instance=request.user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile')
+
+    return render(request, 'update_profile.html', {'user_form': user_form, 'profile_form': profile_form})
+
+@login_required
+def profile_delete(request):
+    if request.method == 'POST':
+        user = request.user
+        logaut(request)
+        user.delete()
+        return redirect('login')
+    return render(request, 'delete_profile.html')

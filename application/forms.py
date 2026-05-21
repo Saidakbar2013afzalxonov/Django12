@@ -23,3 +23,64 @@ class LoginForm(AuthenticationForm):
             'placeholder': 'Email kiriting'
         })
     )
+
+class ProfileUpdateForm(forms.ModelForm):
+    first_name = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Ism'
+        })
+    )
+
+    last_name = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Familiya'
+        })
+
+    )
+
+    phone_number = forms.CharField(
+        max_length=30,
+        widget=forms.TextInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Telefon raqami'
+        })
+    )
+
+    avatar = forms.ImageField(
+        widget=forms.FileInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Avatar URL'
+        })
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'phone_number', 'avatar']
+
+class UserProfileUpdateForm(forms.ModelForm):
+    bio = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-input',
+            'placeholder': 'O\'zingiz haqingizda yozing!',
+            'rows': 5
+        })
+    )
+
+    website = forms.URLField(
+        required=False,
+        widget=forms.URLInput(attrs={
+            'class': 'form-input',
+            'placeholder': 'Veb-sayt URL'
+        })
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ['bio', 'website']
+    
+

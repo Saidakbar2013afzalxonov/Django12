@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0f11;
+      --surface: #16181c;
+      --surface2: #1e2026;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.14);
+      --text: #f0ede8;
+      --muted: #8a8782;
+      --accent: #c9a96e;
+      --accent2: #e8d5b0;
+      --danger: #e05c5c;
+      --success: #5cc98a;
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    /* Header nav */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+    }
+
+    .topbar-brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border2);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1a1400;
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: var(--accent2); }
+
+    .btn-danger {
+      background: transparent;
+      border-color: rgba(224, 92, 92, 0.3);
+      color: var(--danger);
+    }
+    .btn-danger:hover { background: rgba(224,92,92,0.1); border-color: var(--danger); }
+
+    /* Profile card */
+    .profile-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .profile-banner {
+      height: 120px;
+      background: linear-gradient(135deg, #1a1200 0%, #2d2000 40%, #1a1600 100%);
+      position: relative;
+    }
+
+    .profile-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(201,169,110,0.03) 20px,
+        rgba(201,169,110,0.03) 21px
+      );
+    }
+
+    .profile-header {
+      padding: 0 2rem 2rem;
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-top: -48px;
+      flex-wrap: wrap;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 4px solid var(--surface);
+      object-fit: cover;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+    .online-dot {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 16px;
+      height: 16px;
+      background: var(--success);
+      border-radius: 50%;
+      border: 3px solid var(--surface);
+    }
+
+    .profile-name-block {
+      flex: 1;
+      padding-top: 52px;
+    }
+
+    .profile-fullname {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.75rem;
+      font-weight: 400;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .profile-role {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Info section */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border-top: 1px solid var(--border);
+    }
+
+    .info-cell {
+      background: var(--surface);
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .info-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 400;
+      word-break: break-all;
+    }
+
+    .info-value.accent { color: var(--accent); }
+
+    /* Bio / profile section */
+    .profile-section {
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .bio-text {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* Actions */
+    .actions-row {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--surface2);
+    }
+
+    .actions-left { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .badge-gold { background: rgba(201,169,110,0.15); color: var(--accent); border: 1px solid rgba(201,169,110,0.3); }
+    .badge-green { background: rgba(92,201,138,0.1); color: var(--success); border: 1px solid rgba(92,201,138,0.25); }
+
+    @media (max-width: 520px) {
+      .profile-header { flex-direction: column; align-items: flex-start; padding: 1rem 1.25rem 1.5rem; margin-top: -40px; }
+      .profile-name-block { padding-top: 0; }
+      .info-cell { padding: 1rem 1.25rem; }
+      .actions-row { padding: 1rem 1.25rem; }
+      .profile-section { padding: 1rem 1.25rem; }
+      body { padding: 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="topbar">
+      <span class="topbar-brand">MyApp</span>
+      <div class="topbar-actions">
+        <a href="{% url 'logout' %}" class="btn btn-ghost">Chiqish</a>
+      </div>
+    </div>
+
+    <div class="profile-card">
+
+      <div class="profile-banner"></div>
+
+      <div class="profile-header">
+        <div class="avatar-wrap">
+          <div class="avatar">
+            {% if user.picture %}
+              <img src="{{ user.picture.url }}" alt="{{ user.first_name }}">
+            {% else %}
+              {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+            {% endif %}
+          </div>
+          <div class="online-dot"></div>
+        </div>
+        <div class="profile-name-block">
+          <h1 class="profile-fullname">{{ user.first_name }} {{ user.last_name }}</h1>
+          <p class="profile-role">
+            <span class="badge badge-gold">Foydalanuvchi</span>
+            &nbsp;
+            <span class="badge badge-green">Faol</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-cell">
+          <span class="info-label">Email</span>
+          <span class="info-value accent">{{ user.email }}</span>
+        </div>
+        <div class="info-cell">
+          <span class="info-label">Telefon</span>
+          <span class="info-value">
+            {% if user.phone_number %}{{ user.phone_number }}{% else %}—{% endif %}
+          </span>
+        </div>
+        <div class="info-cell">
+          <span class="info-label">Qo'shilgan sana</span>
+          <span class="info-value">{{ user.date_joined|date:"d M Y" }}</span>
+        </div>
+        <div class="info-cell">
+          <span class="info-label">Oxirgi kirish</span>
+          <span class="info-value">{{ user.last_login|date:"d M Y" }}</span>
+        </div>
+      </div>
+
+      {% if user.profile.bio %}
+      <div class="profile-section">
+        <p class="section-title">Bio</p>
+        <p class="bio-text">{{ user.profile.bio }}</p>
+      </div>
+      {% endif %}
+
+      <div class="actions-row">
+        <div class="actions-left">
+          <a href="{% url 'update_profile' %}" class="btn btn-primary">
+            ✏ Tahrirlash
+          </a>
+          <a href="{% url 'profile' %}" class="btn btn-ghost">
+            ← Bosh sahifa
+          </a>
+          <a href="{% url 'abc' %}" class="btn btn-ghost">
+            Ma'lumotlarim
+          </a>
+        </div>
+        <a href="{% url 'profile_delete' %}" class="btn btn-danger">
+          Hisobni o'chirish
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</body>
+</html>

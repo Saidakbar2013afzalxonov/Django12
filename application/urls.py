@@ -14,9 +14,13 @@ urlpatterns=[
     # path('logout/', views.logout_view, name='logout'),
     path('login/', LoginView.as_view(template_name='login.html', authentication_form=LoginForm), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('profile/', views.home_view, name='profile'),  # bu aslida home ,profile emas
+    path('profile/', views.home_view_1, name='profile'),  # bu aslida home ,profile emas
     path('home/', views.profile_view, name='home'), # bu aslida profile, home emas
     path('admin_panel/', views.users_list, name='admin_panel'),
     path('delete_account/', views.delete_account, name='delete_account'),
     path('admin/', views.users_list, name='admin'),
+    path('profile/update/', views.update_profile, name='update_profile'),
+    path('profile/', views.profile_view, name='profile_view'),
+    path('profile/delete/', views.profile_delete, name='profile_delete'),
+    path('profile12/', views.abc, name='abc'),
 ]
