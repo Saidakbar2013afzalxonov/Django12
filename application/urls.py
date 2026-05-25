@@ -23,4 +23,6 @@ urlpatterns=[
     path('profile/', views.profile_view, name='profile_view'),
     path('profile/delete/', views.profile_delete, name='profile_delete'),
     path('profile12/', views.abc, name='abc'),
+    path('posts/', views.post_list, name='post_list'),
+    path('post_detail/<slug:slug>/', views.post_detail, name='post_detail')
 ]

@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from .forms import ProfileUpdateForm, UserProfileUpdateForm
 from django.contrib.auth import logout as logaut
+from django.shortcuts import get_object_or_404
+from .forms import PostForm
 
 User=get_user_model()
 # Create your views here.
@@ -196,3 +198,25 @@ def profile_delete(request):
         user.delete()
         return redirect('login')
     return render(request, 'delete_profile.html')
+
+def post_list(request):
+    posts = models.Post.objects.select_related('author').all()
+    return render(request, 'post_list.html', {'posts': posts})
+
+def post_detail(request, slug):
+    post = get_object_or_404(models.Post, slug=slug)
+    return render(request, 'post_detail.html', {'post': post})
+
+@login_required
+def post_create(request):
+    form = PostForm()
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('post_detail', slug=post.slug)
+
+    return render(request, 'post_create.html', {'form': form})
+

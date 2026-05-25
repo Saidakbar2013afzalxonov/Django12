@@ -2,6 +2,10 @@ from django.contrib import admin
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, UserProfile
+from . import models
+
+
+
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
     model = CustomUser
@@ -16,7 +20,8 @@ class CustomUserAdmin(admin.ModelAdmin):
     readonly_fields = ('slug',)
 
 
-admin.site.register(UserProfile)
+admin.site.register(models.UserProfile)
+admin.site.register(models.Post)
 
 # Register your models here.
 

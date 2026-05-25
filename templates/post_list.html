@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink:    #0f0e0d;
+      --paper:  #f5f0e8;
+      --cream:  #ede7d6;
+      --accent: #c0392b;
+      --muted:  #7a756d;
+      --rule:   #d4cebe;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── MASTHEAD ── */
+    header {
+      border-bottom: 3px solid var(--ink);
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+    }
+    .masthead-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0 0.6rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .date-line {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .issue-tag {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 0.25rem 0.6rem;
+    }
+    .masthead-title {
+      text-align: center;
+      padding: 1.4rem 0 1.2rem;
+    }
+    .masthead-title h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+    .masthead-title .tagline {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 4rem);
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .section-label span {
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    /* ── GRID ── */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 0;
+    }
+
+    /* ── CARD BASE ── */
+    .post-card {
+      border-top: 2px solid var(--ink);
+      padding: 1.6rem 1.8rem 1.6rem 0;
+      border-right: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      animation: fadeUp 0.5s ease both;
+    }
+    .post-card:last-child { border-right: none; }
+    {% for i in "123456"|make_list %}
+    .post-card:nth-child({{ forloop.counter }}) { animation-delay: {{ forloop.counter0 }}00ms; }
+    {% endfor %}
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* feature */
+    .post-card.feature {
+      grid-column: span 7;
+      border-top: 4px solid var(--accent);
+      padding: 2rem 2.2rem 2rem 0;
+    }
+    .post-card.feature .post-title { font-size: clamp(1.6rem, 3.2vw, 2.5rem); }
+    .post-card.feature .post-excerpt { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* secondary */
+    .post-card.secondary { grid-column: span 5; }
+    .post-card.secondary .post-title { font-size: clamp(1.05rem, 1.8vw, 1.35rem); }
+
+    /* tertiary */
+    .post-card.tertiary {
+      grid-column: span 4;
+      border-top: 1px solid var(--rule);
+      padding-top: 1.2rem;
+    }
+    .post-card.tertiary .post-title { font-size: clamp(0.9rem, 1.3vw, 1.05rem); }
+
+    .row-divider {
+      grid-column: span 12;
+      height: 2px;
+      background: var(--ink);
+      margin: 1.8rem 0 0;
+    }
+
+    /* ── POST IMAGE ── */
+    .post-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .post-card.secondary .post-image { aspect-ratio: 4/3; }
+    .post-card.tertiary  .post-image { display: none; }
+
+    /* ── TYPOGRAPHY ── */
+    .post-number {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .post-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: -0.01em;
+    }
+    .post-excerpt {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      display: none;
+    }
+
+    /* ── META ── */
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-top: auto;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--rule);
+      flex-wrap: wrap;
+    }
+    .author-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .author-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .author-initials {
+      color: var(--paper);
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    .author-info { display: flex; flex-direction: column; gap: 0.1rem; }
+    .author-name {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .post-date {
+      font-size: 0.66rem;
+      color: var(--muted);
+    }
+    .read-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+      width: fit-content;
+      margin-left: auto;
+    }
+    .read-link:hover { border-color: var(--accent); }
+    .read-link svg { transition: transform 0.2s; }
+    .read-link:hover svg { transform: translateX(3px); }
+
+    /* ── EMPTY ── */
+    .empty-state {
+      grid-column: span 12;
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--muted);
+    }
+    .empty-state p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 3px solid var(--ink);
+      padding: 1.2rem clamp(1.5rem, 5vw, 4rem);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer p { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    .footer-brand { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .post-card.feature,
+      .post-card.secondary,
+      .post-card.tertiary { grid-column: span 12; border-right: none; }
+      .post-card { padding-right: 0; }
+      .post-card.tertiary .post-image { display: block; aspect-ratio: 16/9; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="masthead-top">
+    <span class="date-line">{% now "j N, Y" %}</span>
+    <span class="issue-tag">Yangi postlar</span>
+  </div>
+  <div class="masthead-title">
+    <h1>Blog</h1>
+    <p class="tagline">Eng yangi maqolalar va fikrlar</p>
+  </div>
+</header>
+
+<main>
+  <div class="section-label">
+    <span>Barcha maqolalar — {{ posts|length }} ta</span>
+  </div>
+
+  <div class="posts-grid">
+    {% if posts %}
+      {% for post in posts %}
+
+        {# ── ROW 2 DIVIDER ── #}
+        {% if forloop.counter == 4 %}
+          <div class="row-divider"></div>
+        {% endif %}
+
+        {# ── CARD TYPE ── #}
+        {% if forloop.first %}
+          <article class="post-card feature">
+        {% elif forloop.counter == 2 or forloop.counter == 3 %}
+          <article class="post-card secondary">
+        {% else %}
+          <article class="post-card tertiary">
+        {% endif %}
+
+          <span class="post-number">0{{ forloop.counter }}</span>
+
+          {# Post rasmi #}
+          {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-image"/>
+          {% endif %}
+
+          <h2 class="post-title">{{ post.title }}</h2>
+
+          {# Excerpt faqat feature uchun #}
+          {% if forloop.first %}
+            <p class="post-excerpt">{{ post.content|truncatewords:40 }}</p>
+          {% endif %}
+
+          <div class="post-meta">
+            <div class="author-avatar">
+              {% if post.author.picture %}
+                <img src="{{ post.author.picture.url }}" alt="{{ post.author }}"/>
+              {% else %}
+                <span class="author-initials">{{ post.author.first_name|first|upper }}{{ post.author.last_name|first|upper }}</span>
+              {% endif %}
+            </div>
+            <div class="author-info">
+              <span class="author-name">{{ post.author.first_name }} {{ post.author.last_name }}</span>
+              <span class="post-date">{{ post.created_at|date:"d.m.Y" }}</span>
+            </div>
+            <a href="{{ post.get_absolute_url }}" class="read-link">
+              O'qish
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+
+        </article>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <p>Hozircha hech qanday post mavjud emas.</p>
+      </div>
+    {% endif %}
+  </div>
+</main>
+
+<footer>
+  <p>Jami {{ posts|length }} ta maqola</p>
+  <span class="footer-brand">Blog</span>
+  <p>© {% now "Y" %}</p>
+</footer>
+
+</body>
+</html>
