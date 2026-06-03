@@ -45,6 +45,12 @@ Home
             </form>
         </div>
 
+        <a href="{% url 'post_list' %}">
+                <button class="btn-delete">
+                    Barcha postlar
+                </button>
+            </a>
+
         {% if user.is_superuser %}
             <a href="{% url 'admin_panel' %}">
                 <button class="btn-create">

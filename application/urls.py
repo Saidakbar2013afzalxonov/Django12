@@ -24,5 +24,8 @@ urlpatterns=[
     path('profile/delete/', views.profile_delete, name='profile_delete'),
     path('profile12/', views.abc, name='abc'),
     path('posts/', views.post_list, name='post_list'),
-    path('post_detail/<slug:slug>/', views.post_detail, name='post_detail')
+    path('post_detail/<slug:slug>/', views.post_detail, name='post_detail'),
+    path('post_create/', views.post_create,name = 'post_create'),
+    path('post_update/<slug:slug>/',views.post_update,name = 'post_update'),
+    path('post_delete/<slug:slug>/',views.post_delete,name='post_delete'),
 ]

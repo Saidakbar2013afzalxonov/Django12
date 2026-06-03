@@ -1,0 +1,863 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postni tahrirlash — {{ post.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --ink: #0f0e0d;
+            --paper: #f5f0e8;
+            --cream: #ede8dc;
+            --accent: #c8451a;
+            --muted: #7a7060;
+            --border: #d4cfc3;
+            --white: #fff;
+            --error: #c0392b;
+            --success: #2a7a4a;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245, 240, 232, 0.88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 clamp(1.5rem, 5vw, 4rem);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 1.35rem;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 1rem;
+            border-radius: 2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost {
+            color: var(--muted);
+            border-color: var(--border);
+            background: transparent;
+        }
+        .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+        .btn-view {
+            color: var(--ink);
+            border-color: var(--ink);
+            background: transparent;
+        }
+        .btn-view:hover { background: var(--ink); color: var(--paper); }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 4rem) 2rem;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .page-label::before {
+            content: '';
+            display: inline-block;
+            width: 24px; height: 1.5px;
+            background: var(--accent);
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4.5vw, 2.9rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            color: var(--ink);
+            margin-bottom: 0.6rem;
+        }
+
+        .original-slug {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-family: 'Courier New', monospace;
+            color: var(--muted);
+            background: var(--cream);
+            border: 1px solid var(--border);
+            padding: 0.22rem 0.65rem;
+            border-radius: 2px;
+        }
+
+        /* ── CHANGED BADGE ── */
+        .changed-banner {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 0 clamp(1.5rem, 5vw, 4rem) 1.5rem;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .changed-pill {
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            background: #fdf6f0;
+            border: 1px solid #f0d9cc;
+            border-left: 3px solid var(--accent);
+            padding: 0.75rem 1rem;
+            border-radius: 2px;
+            font-size: 0.82rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .changed-pill.visible { display: flex; }
+
+        /* ── FORM WRAPPER ── */
+        .form-wrapper {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 0 clamp(1.5rem, 5vw, 4rem) 5rem;
+            animation: fadeUp 0.6s 0.15s ease both;
+        }
+
+        .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 2.5rem; }
+
+        /* ── FIELD GROUPS ── */
+        .field-group { margin-bottom: 2.2rem; }
+
+        .field-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.55rem;
+        }
+
+        .field-label label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .required-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: inline-block;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        .char-count {
+            font-size: 0.72rem;
+            color: var(--border);
+            font-variant-numeric: tabular-nums;
+            transition: color 0.2s;
+        }
+        .char-count.warn { color: var(--accent); }
+
+        /* ── INPUTS ── */
+        .field-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1.5px solid var(--border);
+            padding: 0.6rem 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s;
+            caret-color: var(--accent);
+        }
+        .field-input::placeholder { color: var(--border); }
+        .field-input:focus { border-color: var(--ink); }
+        .field-input.modified { border-color: var(--accent); }
+
+        .field-textarea {
+            width: 100%;
+            background: transparent;
+            border: 1.5px solid var(--border);
+            padding: 1rem 1.1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            line-height: 1.85;
+            color: var(--ink);
+            outline: none;
+            resize: vertical;
+            min-height: 300px;
+            border-radius: 2px;
+            transition: border-color 0.2s;
+            caret-color: var(--accent);
+        }
+        .field-textarea::placeholder { color: var(--border); }
+        .field-textarea:focus { border-color: var(--ink); }
+        .field-textarea.modified { border-color: var(--accent); }
+
+        /* ── DIFF INDICATOR ── */
+        .diff-tag {
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 500;
+            padding: 0.15rem 0.5rem;
+            border-radius: 2px;
+            display: none;
+        }
+        .diff-tag.changed {
+            display: inline-block;
+            background: #fdf6f0;
+            color: var(--accent);
+            border: 1px solid #f0d9cc;
+        }
+
+        /* ── IMAGE SECTION ── */
+        .image-section {
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .image-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: var(--cream);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .image-section-title {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .image-tabs {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .tab-btn {
+            padding: 0.3rem 0.75rem;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.18s;
+        }
+        .tab-btn.active {
+            background: var(--ink);
+            color: var(--paper);
+            border-color: var(--ink);
+        }
+        .tab-btn:not(.active):hover { border-color: var(--border); color: var(--ink); }
+
+        .image-panel { display: none; padding: 1.25rem; }
+        .image-panel.active { display: block; }
+
+        /* existing image */
+        .existing-preview {
+            position: relative;
+            display: inline-block;
+        }
+        .existing-preview img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            display: block;
+            border: 1px solid var(--border);
+        }
+        .existing-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* upload zone */
+        .upload-zone {
+            border: 1.5px dashed var(--border);
+            border-radius: 2px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.22s;
+            position: relative;
+            overflow: hidden;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--ink);
+            background: var(--cream);
+        }
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        .upload-icon {
+            width: 36px; height: 36px;
+            margin: 0 auto 0.85rem;
+            color: var(--border);
+            transition: color 0.2s;
+        }
+        .upload-zone:hover .upload-icon { color: var(--muted); }
+        .upload-title { font-size: 0.88rem; font-weight: 500; color: var(--muted); margin-bottom: 0.25rem; }
+        .upload-hint { font-size: 0.75rem; color: var(--border); }
+
+        .new-preview { display: none; }
+        .new-preview img {
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            display: block;
+            border: 1px solid var(--border);
+        }
+        .new-preview-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+        .new-preview-name { font-size: 0.78rem; color: var(--muted); }
+        .btn-remove-img {
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--error);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            padding: 0;
+            transition: opacity 0.2s;
+        }
+        .btn-remove-img:hover { opacity: 0.7; }
+
+        /* ── FORM ERRORS ── */
+        .field-errors { margin-top: 0.45rem; font-size: 0.78rem; color: var(--error); }
+
+        /* ── SUBMIT ── */
+        .submit-area {
+            padding-top: 2.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .submit-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .last-saved {
+            font-size: 0.75rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .unsaved-warn {
+            font-size: 0.75rem;
+            color: var(--accent);
+            display: none;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .unsaved-warn.visible { display: flex; }
+
+        .submit-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+        .btn-cancel {
+            padding: 0.7rem 1.4rem;
+            border-radius: 2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--muted);
+            border: 1.5px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover { color: var(--ink); border-color: var(--ink); }
+
+        .btn-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            border-radius: 2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--white);
+            background: var(--ink);
+            border: 1.5px solid var(--ink);
+            cursor: pointer;
+            transition: all 0.22s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--success);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        .btn-save:hover::before { transform: scaleX(1); }
+        .btn-save span, .btn-save svg { position: relative; z-index: 1; }
+        .btn-save:active { transform: scale(0.98); }
+        .btn-save:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        .btn-save:disabled::before { display: none; }
+
+        /* ── ERROR BANNER ── */
+        .error-banner {
+            background: #fdf0ee;
+            border: 1px solid #f0c4bb;
+            border-left: 3px solid var(--error);
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            border-radius: 2px;
+            font-size: 0.85rem;
+            color: var(--error);
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+        .error-banner svg { flex-shrink: 0; margin-top: 1px; }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <a class="nav-brand" href="{% url 'post_list' %}">The Journal</a>
+    <div class="nav-right">
+        <a href="{% url 'post_detail' post.slug %}" class="btn btn-view">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ko'rish
+        </a>
+        <a href="{% url 'post_list' %}" class="btn btn-ghost">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            Orqaga
+        </a>
+    </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="page-label">Tahrirlash rejimi</div>
+    <h1 class="page-title">{{ post.title|truncatechars:55 }}</h1>
+    <span class="original-slug">
+        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        /post_detail/{{ post.slug }}/
+    </span>
+</div>
+
+<!-- CHANGED BANNER -->
+<div class="changed-banner">
+    <div class="changed-pill" id="changedBanner">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        O'zgartirishlar saqlanmagan
+    </div>
+</div>
+
+<!-- FORM -->
+<div class="form-wrapper">
+    <hr class="divider">
+
+    {% if form.errors %}
+    <div class="error-banner">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div><strong>Formda xatoliklar bor.</strong> Iltimos, quyidagi maydonlarni tekshiring.</div>
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" id="postForm">
+        {% csrf_token %}
+
+        <!-- TITLE -->
+        <div class="field-group">
+            <div class="field-label">
+                <label for="id_title">
+                    Sarlavha <span class="required-dot"></span>
+                    <span class="diff-tag" id="titleDiff">o'zgartirildi</span>
+                </label>
+                <span class="char-count" id="titleCount">0 / 200</span>
+            </div>
+            <input
+                type="text"
+                name="title"
+                id="id_title"
+                class="field-input"
+                placeholder="Sarlavha…"
+                maxlength="200"
+                value="{{ form.title.value|default:post.title }}"
+                autocomplete="off"
+                oninput="onTitleChange(this)"
+            >
+            {% if form.title.errors %}
+                <div class="field-errors">{{ form.title.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <!-- CONTENT -->
+        <div class="field-group">
+            <div class="field-label">
+                <label for="id_content">
+                    Matn <span class="required-dot"></span>
+                    <span class="diff-tag" id="contentDiff">o'zgartirildi</span>
+                </label>
+                <span class="char-count" id="contentCount">0 ta so'z</span>
+            </div>
+            <textarea
+                name="content"
+                id="id_content"
+                class="field-textarea"
+                oninput="onContentChange(this)"
+            >{{ form.content.value|default:post.content }}</textarea>
+            {% if form.content.errors %}
+                <div class="field-errors">{{ form.content.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <!-- IMAGE -->
+        <div class="field-group">
+            <div class="field-label">
+                <label>
+                    Muqova rasmi
+                    <span class="diff-tag" id="imgDiff">o'zgartirildi</span>
+                </label>
+                <span class="char-count">Ixtiyoriy</span>
+            </div>
+
+            <div class="image-section">
+                <div class="image-section-header">
+                    <span class="image-section-title">Rasm manbasi</span>
+                    <div class="image-tabs">
+                        {% if post.image %}
+                        <button type="button" class="tab-btn active" id="tabKeep" onclick="switchTab('keep')">Mavjud</button>
+                        <button type="button" class="tab-btn" id="tabNew" onclick="switchTab('new')">Yangi yuklash</button>
+                        {% else %}
+                        <button type="button" class="tab-btn active" id="tabNew" onclick="switchTab('new')">Rasm yuklash</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if post.image %}
+                <div class="image-panel active" id="panelKeep">
+                    <div class="existing-preview">
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    </div>
+                    <p class="existing-label">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        Joriy muqova rasmi saqlanib qoladi
+                    </p>
+                </div>
+                {% endif %}
+
+                <div class="image-panel {% if not post.image %}active{% endif %}" id="panelNew">
+                    <div class="upload-zone" id="uploadZone"
+                         ondragover="handleDragOver(event)"
+                         ondragleave="handleDragLeave(event)"
+                         ondrop="handleDrop(event)">
+                        <input type="file" name="image" id="id_image" accept="image/*" onchange="handleFile(event)">
+                        <svg class="upload-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                        </svg>
+                        <p class="upload-title">Yangi rasm tanlang yoki tashlang</p>
+                        <p class="upload-hint">PNG, JPG, WEBP · Maks 10 MB</p>
+                    </div>
+                    <div class="new-preview" id="newPreview">
+                        <img id="newPreviewImg" src="" alt="">
+                        <div class="new-preview-actions">
+                            <span class="new-preview-name" id="newFileName"></span>
+                            <button type="button" class="btn-remove-img" onclick="removeNewImage()">✕ O'chirish</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if form.image.errors %}
+                <div class="field-errors">{{ form.image.errors.as_text }}</div>
+            {% endif %}
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="submit-area">
+            <div class="submit-left">
+                <div class="last-saved">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    {% if post.updated_at %}
+                        Oxirgi saqlash: {{ post.updated_at|date:"d.m.Y H:i" }}
+                    {% else %}
+                        Yaratilgan: {{ post.created_at|date:"d.m.Y H:i" }}
+                    {% endif %}
+                </div>
+                <div class="unsaved-warn" id="unsavedWarn">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Saqlanmagan o'zgarishlar bor
+                </div>
+            </div>
+
+            <div class="submit-actions">
+                <a href="{% url 'post_detail' post.slug %}" class="btn-cancel">
+                    Bekor qilish
+                </a>
+                <button type="submit" class="btn-save" id="saveBtn">
+                    <span>Saqlash</span>
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // ── ORIGINALS ──
+    const origTitle   = document.getElementById('id_title').value;
+    const origContent = document.getElementById('id_content').value;
+    let   hasNewImage = false;
+
+    function markChanged() {
+        const t = document.getElementById('id_title').value   !== origTitle;
+        const c = document.getElementById('id_content').value !== origContent;
+        const i = hasNewImage;
+        const any = t || c || i;
+
+        document.getElementById('changedBanner').classList.toggle('visible', any);
+        document.getElementById('unsavedWarn').classList.toggle('visible', any);
+    }
+
+    // ── TITLE ──
+    function onTitleChange(el) {
+        const len = el.value.length;
+        const count = document.getElementById('titleCount');
+        count.textContent = len + ' / 200';
+        count.classList.toggle('warn', len > 170);
+
+        const diff = document.getElementById('titleDiff');
+        diff.classList.toggle('changed', el.value !== origTitle);
+        el.classList.toggle('modified', el.value !== origTitle);
+        markChanged();
+    }
+
+    // ── CONTENT ──
+    function onContentChange(el) {
+        const words = el.value.trim().split(/\s+/).filter(w => w).length;
+        const count = document.getElementById('contentCount');
+        count.textContent = words + ' ta so\'z';
+        count.classList.toggle('warn', words > 2000);
+
+        const diff = document.getElementById('contentDiff');
+        diff.classList.toggle('changed', el.value !== origContent);
+        el.classList.toggle('modified', el.value !== origContent);
+        markChanged();
+    }
+
+    // ── IMAGE TABS ──
+    function switchTab(tab) {
+        {% if post.image %}
+        const keepPanel = document.getElementById('panelKeep');
+        const newPanel  = document.getElementById('panelNew');
+        const tabKeep   = document.getElementById('tabKeep');
+        const tabNew    = document.getElementById('tabNew');
+
+        if (tab === 'keep') {
+            keepPanel.classList.add('active');
+            newPanel.classList.remove('active');
+            tabKeep.classList.add('active');
+            tabNew.classList.remove('active');
+            // clear new file
+            document.getElementById('id_image').value = '';
+            document.getElementById('newPreview').style.display = 'none';
+            document.getElementById('uploadZone').style.display = 'block';
+            hasNewImage = false;
+        } else {
+            newPanel.classList.add('active');
+            keepPanel.classList.remove('active');
+            tabNew.classList.add('active');
+            tabKeep.classList.remove('active');
+        }
+        {% endif %}
+        markChanged();
+    }
+
+    // ── FILE UPLOAD ──
+    function handleFile(e) {
+        const file = e.target.files[0];
+        if (file) showNewPreview(file);
+    }
+
+    function showNewPreview(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('newPreviewImg').src = e.target.result;
+            document.getElementById('newFileName').textContent = file.name;
+            document.getElementById('newPreview').style.display = 'block';
+            document.getElementById('uploadZone').style.display = 'none';
+            document.getElementById('imgDiff').classList.add('changed');
+            hasNewImage = true;
+            markChanged();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeNewImage() {
+        document.getElementById('id_image').value = '';
+        document.getElementById('newPreview').style.display = 'none';
+        document.getElementById('uploadZone').style.display = 'block';
+        document.getElementById('imgDiff').classList.remove('changed');
+        hasNewImage = false;
+        markChanged();
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        document.getElementById('uploadZone').classList.add('dragover');
+    }
+    function handleDragLeave() {
+        document.getElementById('uploadZone').classList.remove('dragover');
+    }
+    function handleDrop(e) {
+        e.preventDefault();
+        handleDragLeave();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            document.getElementById('id_image').files = dt.files;
+            showNewPreview(file);
+        }
+    }
+
+    // ── UNSAVED LEAVE WARN ──
+    window.addEventListener('beforeunload', (e) => {
+        const t = document.getElementById('id_title').value   !== origTitle;
+        const c = document.getElementById('id_content').value !== origContent;
+        if (t || c || hasNewImage) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // don't warn when actually submitting
+    document.getElementById('postForm').addEventListener('submit', () => {
+        window.onbeforeunload = null;
+    });
+
+    // ── INIT ──
+    document.addEventListener('DOMContentLoaded', () => {
+        onTitleChange(document.getElementById('id_title'));
+        onContentChange(document.getElementById('id_content'));
+    });
+</script>
+</body>
+</html>

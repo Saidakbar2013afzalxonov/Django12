@@ -200,7 +200,7 @@ def profile_delete(request):
     return render(request, 'delete_profile.html')
 
 def post_list(request):
-    posts = models.Post.objects.select_related('author').all()
+    posts = models.Post.objects.prefetch_related('tags').select_related('author').all()
     return render(request, 'post_list.html', {'posts': posts})
 
 def post_detail(request, slug):
@@ -219,4 +219,36 @@ def post_create(request):
             return redirect('post_detail', slug=post.slug)
 
     return render(request, 'post_create.html', {'form': form})
+
+@login_required
+def post_update(request, slug):
+    post = get_object_or_404(models.Post, slug=slug)
+
+    if post.author != request.user:
+        return redirect('post_detail', slug=slug)
+
+    form = PostForm(instance=post)
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', slug=post.slug)
+
+    return render(request, 'post_update.html', {'form': form, 'post': post})
+
+
+@login_required
+def post_delete(request, slug):
+    post = get_object_or_404(models.Post, slug=slug)
+
+    if post.author != request.user:
+        return redirect('post_detail', slug=slug)
+
+    if request.method == 'POST':
+        post.delete()
+        return redirect('post_list')
+
+    return render(request, 'post_delete.html', {'post': post})
 

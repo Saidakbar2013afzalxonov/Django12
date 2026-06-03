@@ -287,7 +287,9 @@
 <header>
   <div class="masthead-top">
     <span class="date-line">{% now "j N, Y" %}</span>
-    <span class="issue-tag">Yangi postlar</span>
+    <a href="{% url 'post_create' %}">
+      <button class="issue-tag">Yangi postlar</button>
+    </a>
   </div>
   <div class="masthead-title">
     <h1>Blog</h1>

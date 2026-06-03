@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import CustomUser
+from .models import CustomUser, Tag
 from .models import Post
 
 
@@ -102,14 +102,22 @@ class PostForm(forms.ModelForm):
 
     image = forms.ImageField(
         widget=forms.FileInput(attrs={
-            'class': 'form-input',
+            'class': 'form-file',
             'placeholder': 'Post rasmi'
+        })
+    )
+
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'tag-checkbox'
         })
     )
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'image']
+        fields = ['title', 'content', 'image', 'tags']
 
 
 
