@@ -1,0 +1,532 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if query %}"{{ query }}" uchun qidiruv{% else %}Qidiruv{% endif %} — The Journal</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ink: #0f0e0d;
+            --paper: #f5f0e8;
+            --cream: #ede8dc;
+            --accent: #c8451a;
+            --accent-light: #e8613a;
+            --muted: #7a7060;
+            --border: #d4cfc3;
+            --white: #fff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 17px;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* ── NOISE TEXTURE OVERLAY ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245, 240, 232, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 clamp(1.5rem, 5vw, 4rem);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 1.35rem;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 1.1rem;
+            border-radius: 2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1.5px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .btn-ghost {
+            color: var(--muted);
+            border-color: var(--border);
+            background: transparent;
+        }
+
+        .btn-ghost:hover {
+            color: var(--ink);
+            border-color: var(--ink);
+            background: transparent;
+        }
+
+        .btn-edit {
+            color: var(--ink);
+            border-color: var(--ink);
+            background: transparent;
+        }
+
+        .btn-edit:hover {
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        /* ── HERO AREA ── */
+        .hero {
+            position: relative;
+            padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem) 0;
+            max-width: 860px;
+            margin: 0 auto;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.25rem;
+        }
+
+        .post-category::before {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 1.5px;
+            background: var(--accent);
+        }
+
+        .post-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            color: var(--ink);
+            margin-bottom: 2rem;
+        }
+
+        /* ── SEARCH FORM ── */
+        .search-form {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-form input[type="text"] {
+            flex: 1;
+            padding: 0.85rem 1.1rem;
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: 2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.98rem;
+            color: var(--ink);
+            transition: border-color 0.2s ease;
+        }
+
+        .search-form input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .search-form input[type="text"]::placeholder {
+            color: var(--muted);
+        }
+
+        .search-form button {
+            padding: 0.85rem 1.6rem;
+            border-radius: 2px;
+            border: 1.5px solid var(--ink);
+            background: var(--ink);
+            color: var(--paper);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .search-form button:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .search-summary {
+            font-size: 0.9rem;
+            color: var(--muted);
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0.5rem;
+        }
+
+        .search-summary strong {
+            color: var(--ink);
+            font-weight: 500;
+        }
+
+        /* ── RESULTS ── */
+        .content-wrap {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 2rem clamp(1.5rem, 5vw, 4rem) 0;
+            animation: fadeUp 0.7s 0.2s ease both;
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .result-card {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 1.75rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.2s ease;
+        }
+
+        .result-card:hover {
+            opacity: 0.75;
+        }
+
+        .result-card:first-child {
+            padding-top: 0;
+        }
+
+        .result-thumb {
+            width: 160px;
+            height: 110px;
+            border: 1px solid var(--border);
+            background: var(--cream);
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--border);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+        }
+
+        .result-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .result-body {
+            min-width: 0;
+        }
+
+        .result-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .result-excerpt {
+            font-size: 0.92rem;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-bottom: 0.85rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .result-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .result-author {
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .result-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .tag-pill {
+            font-size: 0.7rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--cream);
+            border: 1px solid var(--border);
+            padding: 0.15rem 0.55rem;
+            border-radius: 2px;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 4rem clamp(1.5rem, 5vw, 4rem);
+            border: 1px dashed var(--border);
+            margin: 1rem 0 2rem;
+        }
+
+        .empty-state .ornament {
+            color: var(--border);
+            font-size: 1.2rem;
+            letter-spacing: 0.6em;
+            margin-bottom: 1.5rem;
+            user-select: none;
+        }
+
+        .empty-state h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin-bottom: 1.75rem;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            max-width: 860px;
+            margin: 4rem auto 0;
+            padding: 2rem clamp(1.5rem, 5vw, 4rem);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-back:hover {
+            color: var(--ink);
+        }
+
+        .footer-back svg {
+            transition: transform 0.2s;
+        }
+
+        .footer-back:hover svg {
+            transform: translateX(-3px);
+        }
+
+        .footer-copy {
+            font-size: 0.78rem;
+            color: var(--border);
+        }
+
+        @media (max-width: 540px) {
+            .result-card {
+                grid-template-columns: 1fr;
+            }
+
+            .result-thumb {
+                width: 100%;
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <a class="nav-brand" href="{% url 'post_list' %}">The Journal</a>
+        <div class="nav-links">
+            <a href="{% url 'post_list' %}" class="btn btn-ghost">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M19 12H5M12 5l-7 7 7 7" />
+                </svg>
+                Barcha postlar
+            </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'post_create' %}" class="btn btn-edit">+ Yangi post</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="post-category">Qidiruv</div>
+        <h1 class="post-title">
+            {% if query %}"{{ query }}"{% else %}Postlarni qidirish{% endif %}
+        </h1>
+
+        <form method="GET" action="{% url 'search_posts' %}" class="search-form">
+            <input type="text" name="q" value="{{ query }}"
+                placeholder="Sarlavha, matn, mavzu yoki muallif bo'yicha qidiring...">
+            <button type="submit">Qidirish</button>
+        </form>
+
+        {% if query %}
+        <p class="search-summary">
+            <strong>{{ post_count }}</strong> ta natija topildi
+        </p>
+        {% endif %}
+    </div>
+
+    <!-- RESULTS -->
+    <div class="content-wrap">
+        {% if posts %}
+        <div class="results-list">
+            {% for post in posts %}
+            <a href="{% url 'post_detail' post.slug %}" class="result-card">
+                <div class="result-thumb">
+                    {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    {% else %}
+                    {{ post.title|first|upper }}
+                    {% endif %}
+                </div>
+                <div class="result-body">
+                    <h2 class="result-title">{{ post.title }}</h2>
+                    <p class="result-excerpt">{{ post.content|truncatewords:28 }}</p>
+                    <div class="result-meta">
+                        <span class="result-author">{{ post.author.get_full_name|default:post.author.email }}</span>
+                        <span>&middot;</span>
+                        <span>{{ post.created_at|date:"d F, Y" }}</span>
+                        {% if post.tags.all %}
+                        <span>&middot;</span>
+                        <div class="result-tags">
+                            {% for tag in post.tags.all %}
+                            <span class="tag-pill">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+            {% if query %}
+            <h2>Hech narsa topilmadi</h2>
+            <p>"{{ query }}" bo'yicha mos post topilmadi. Boshqa kalit so'z bilan qayta urinib ko'ring.</p>
+            {% else %}
+            <h2>Qidiruvni boshlang</h2>
+            <p>Kerakli postni topish uchun yuqoridagi maydonga kalit so'z kiriting.</p>
+            {% endif %}
+            <a href="{% url 'post_list' %}" class="btn btn-edit">Barcha postlarni ko'rish</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <a href="{% url 'post_list' %}" class="footer-back">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            Blogga qaytish
+        </a>
+        <span class="footer-copy">The Journal &copy; 2025</span>
+    </footer>
+
+</body>
+
+</html>

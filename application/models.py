@@ -102,6 +102,9 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    views_count = models.PositiveIntegerField(default = 0)
+    likes_count = models.PositiveIntegerField(default = 0)
+
     class Meta:
         ordering = ['-created_at']
 
@@ -115,6 +118,44 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Like(models.Model):
+    user = models.ForeignKey(
+        CustomUser,on_delete = models.CASCADE, related_name = 'likes'
+    )
+
+    post = models.ForeignKey(
+        Post,on_delete = models.CASCADE, related_name = 'likes'
+    )
+
+    created_at = models.DateTimeField(auto_now_add = True)
+
+    class Meta:
+        unique_together = ('user','post')
+
+    def __str__(self):
+        return f"{self.user.email} -> {self.post.title}"
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post,on_delete = models.CASCADE, related_name = 'comments'
+    )
+
+    author = models.ForeignKey(
+        CustomUser,on_delete = models.CASCADE, related_name = 'comments'
+    )
+
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add = True)
+
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.author.email} -> {self.post.title}"
+
+
 
 
     

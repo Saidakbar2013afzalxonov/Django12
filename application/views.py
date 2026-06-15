@@ -11,7 +11,10 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import ProfileUpdateForm, UserProfileUpdateForm
 from django.contrib.auth import logout as logaut
 from django.shortcuts import get_object_or_404
-from .forms import PostForm
+from .forms import PostForm,CommentForm
+from django.db.models import Q, Count
+from .models import Post, Like
+
 
 User=get_user_model()
 # Create your views here.
@@ -204,8 +207,23 @@ def post_list(request):
     return render(request, 'post_list.html', {'posts': posts})
 
 def post_detail(request, slug):
-    post = get_object_or_404(models.Post, slug=slug)
-    return render(request, 'post_detail.html', {'post': post})
+    post = Post.objects.prefetch_related('tags').select_related('author').get(slug=slug)
+    comments = post.comments.all()
+    comment_form = CommentForm()
+
+    user_liked = False
+    if request.user.is_authenticated:
+        user_liked = Like.objects.filter(user = request.user, post = post).exists()
+    
+    context = {
+        'post': post,
+        'comments':comments,
+        'comment_form':comment_form,
+        'user_liked':user_liked,
+        'likes_count':post.likes.count(),
+        'comment_count':comments.count(),
+    }
+    return render(request, 'post_detail.html', context)
 
 @login_required
 def post_create(request):
@@ -251,4 +269,53 @@ def post_delete(request, slug):
         return redirect('post_list')
 
     return render(request, 'post_delete.html', {'post': post})
+
+def search_posts(request):
+    query = request.GET.get('q','')
+    posts = Post.objects.all()
+
+    if query:
+        posts = posts.filter(
+            Q(title__icontains = query) |
+            Q(content__icontains = query) |
+            Q(tags__name__icontains = query) |
+            Q(author__first_name__icontains = query) |
+            Q(author__last_name__icontains = query)
+        ).distinct()
+
+    context = {
+        'posts':posts,
+        'query':query,
+        'post_count':posts.count(),
+    }
+    return render(request, 'search_results.html',context)
+
+@login_required
+def like_toggle(request, slug):
+    post = Post.objects.prefetch_related('tags').select_related('author').get(slug=slug)
+    like, created = Like.objects.get_or_create(user = request.user,post = post)
+
+    if not created:
+        like.delete()
+    
+    return redirect('post_detail',slug = post.slug)
+
+@login_required
+def add_comment(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+
+    return redirect('post_detail', slug=post.slug)
+
+
+
+
 

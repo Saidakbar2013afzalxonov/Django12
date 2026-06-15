@@ -287,6 +287,9 @@
 <header>
   <div class="masthead-top">
     <span class="date-line">{% now "j N, Y" %}</span>
+    <a href="{% url 'home' %}">
+      <button class="issue-tag">Profilega qaytish</button>
+    </a>
     <a href="{% url 'post_create' %}">
       <button class="issue-tag">Yangi postlar</button>
     </a>
