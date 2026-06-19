@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Blog</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <style>
@@ -21,6 +21,8 @@
       color: var(--ink);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
+      overflow-x: hidden; /* qo'shing */
+      width: 100%;   
     }
 
     /* ── MASTHEAD ── */
@@ -50,6 +52,8 @@
       text-transform: uppercase;
       font-weight: 500;
       padding: 0.25rem 0.6rem;
+      border: none;
+      cursor: pointer;
     }
     .masthead-title {
       text-align: center;
@@ -76,6 +80,7 @@
       max-width: 1280px;
       margin: 0 auto;
       padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 4rem);
+      overflow-x: hidden; /* qo'shing */
     }
 
     .section-label {
@@ -99,11 +104,17 @@
       background: var(--rule);
     }
 
+    html {
+      overflow-x: hidden;
+    }
+
     /* ── GRID ── */
     .posts-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 0;
+      width: 100%; /* bu qatorni qo'shing */
+      min-width: 0; /* bu ham */
     }
 
     /* ── CARD BASE ── */
@@ -117,9 +128,6 @@
       animation: fadeUp 0.5s ease both;
     }
     .post-card:last-child { border-right: none; }
-    {% for i in "123456"|make_list %}
-    .post-card:nth-child({{ forloop.counter }}) { animation-delay: {{ forloop.counter0 }}00ms; }
-    {% endfor %}
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
@@ -261,6 +269,112 @@
       font-style: italic;
     }
 
+    /* ── PAGINATION ── */
+    .pagination-wrap {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 3px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .pagination-info {
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .pagination-info strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .pagination-nav {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .page-link,
+    .page-current,
+    .page-dots {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid var(--rule);
+      margin-left: -1px;
+      transition: all 0.15s ease;
+      position: relative;
+      z-index: 0;
+    }
+
+    .page-link:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+      z-index: 1;
+    }
+
+    .page-current {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+      z-index: 2;
+    }
+
+    .page-dots {
+      cursor: default;
+      border-color: var(--rule);
+      color: var(--muted);
+    }
+
+    .page-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0 0.9rem;
+      height: 36px;
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid var(--ink);
+      transition: all 0.15s ease;
+    }
+
+    .page-nav-btn:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .page-nav-btn:hover svg path {
+      stroke: var(--paper);
+    }
+
+    .page-nav-btn.disabled {
+      color: var(--rule);
+      border-color: var(--rule);
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .page-nav-btn svg {
+      flex-shrink: 0;
+    }
+
     /* ── FOOTER ── */
     footer {
       border-top: 3px solid var(--ink);
@@ -279,6 +393,25 @@
       .post-card.tertiary { grid-column: span 12; border-right: none; }
       .post-card { padding-right: 0; }
       .post-card.tertiary .post-image { display: block; aspect-ratio: 16/9; }
+
+      .pagination-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-link, .page-current, .page-dots {
+        width: 32px;
+        height: 32px;
+        font-size: 0.7rem;
+      }
+      .page-nav-btn {
+        height: 32px;
+        padding: 0 0.7rem;
+        font-size: 0.6rem;
+      }
     }
   </style>
 </head>
@@ -286,14 +419,32 @@
 
 <header>
   <div class="masthead-top">
-    <span class="date-line">{% now "j N, Y" %}</span>
-    <a href="{% url 'home' %}">
-      <button class="issue-tag">Profilega qaytish</button>
-    </a>
-    <a href="{% url 'post_create' %}">
-      <button class="issue-tag">Yangi postlar</button>
-    </a>
-  </div>
+  <span class="date-line">{% now "j N, Y" %}</span>
+  <a href="{% url 'home' %}">
+    <button class="issue-tag">Profilega qaytish</button>
+  </a>
+
+  <form method="GET" action="{% url 'search_posts' %}" style="display:flex; gap:0.4rem; align-items:center;">
+    <input type="text" name="q" placeholder="Qidirish..."
+      style="
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--rule);
+        padding: 0.2rem 0.5rem;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        color: var(--ink);
+        width: 160px;
+        outline: none;
+      ">
+    <button type="submit" class="issue-tag">Qidirish</button>
+  </form>
+
+  <a href="{% url 'post_create' %}">
+    <button class="issue-tag">Yangi post</button>
+  </a>
+</div>
   <div class="masthead-title">
     <h1>Blog</h1>
     <p class="tagline">Eng yangi maqolalar va fikrlar</p>
@@ -302,12 +453,12 @@
 
 <main>
   <div class="section-label">
-    <span>Barcha maqolalar — {{ posts|length }} ta</span>
+    <span>Barcha maqolalar — {{ page_obj.paginator.count }} ta</span>
   </div>
 
   <div class="posts-grid">
-    {% if posts %}
-      {% for post in posts %}
+    {% if page_obj %}
+      {% for post in page_obj %}
 
         {# ── ROW 2 DIVIDER ── #}
         {% if forloop.counter == 4 %}
@@ -365,10 +516,76 @@
       </div>
     {% endif %}
   </div>
+
+  {# ── PAGINATION ── #}
+  {% if page_obj.paginator.num_pages > 1 %}
+  <div class="pagination-wrap">
+
+    <p class="pagination-info">
+      <strong>{{ page_obj.start_index }}–{{ page_obj.end_index }}</strong>
+      / {{ page_obj.paginator.count }} ta maqola &nbsp;·&nbsp;
+      {{ page_obj.number }}-sahifa
+    </p>
+
+    <nav aria-label="Sahifalar" style="display: flex; align-items: center; gap: 0.75rem;">
+
+      {# Prev button #}
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-nav-btn" aria-label="Oldingi sahifa">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M10 7H4M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Oldingi
+        </a>
+      {% else %}
+        <span class="page-nav-btn disabled" aria-disabled="true">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M10 7H4M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Oldingi
+        </span>
+      {% endif %}
+
+      {# Page numbers #}
+      <div class="pagination-nav">
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <span class="page-current" aria-current="page">{{ num }}</span>
+          {% elif num == 1 or num == page_obj.paginator.num_pages %}
+            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+          {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+            <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+          {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+            <span class="page-dots">…</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {# Next button #}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-nav-btn" aria-label="Keyingi sahifa">
+          Keyingi
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M4 7h6M10 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {% else %}
+        <span class="page-nav-btn disabled" aria-disabled="true">
+          Keyingi
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M4 7h6M10 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      {% endif %}
+
+    </nav>
+  </div>
+  {% endif %}
+
 </main>
 
 <footer>
-  <p>Jami {{ posts|length }} ta maqola</p>
+  <p>Jami {{ page_obj.paginator.count }} ta maqola</p>
   <span class="footer-brand">Blog</span>
   <p>© {% now "Y" %}</p>
 </footer>

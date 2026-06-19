@@ -10,13 +10,7 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet">
     <style>
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --ink: #0f0e0d;
@@ -29,9 +23,7 @@
             --white: #fff;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background: var(--paper);
@@ -42,7 +34,6 @@
             min-height: 100vh;
         }
 
-        /* ── NOISE TEXTURE OVERLAY ── */
         body::before {
             content: '';
             position: fixed;
@@ -52,7 +43,6 @@
             z-index: 0;
         }
 
-        /* ── NAV ── */
         nav {
             position: sticky;
             top: 0;
@@ -76,11 +66,7 @@
             letter-spacing: -0.5px;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
+        .nav-links { display: flex; gap: 0.5rem; align-items: center; }
 
         .btn {
             display: inline-flex;
@@ -99,30 +85,12 @@
             transition: all 0.2s ease;
         }
 
-        .btn-ghost {
-            color: var(--muted);
-            border-color: var(--border);
-            background: transparent;
-        }
+        .btn-ghost { color: var(--muted); border-color: var(--border); background: transparent; }
+        .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
 
-        .btn-ghost:hover {
-            color: var(--ink);
-            border-color: var(--ink);
-            background: transparent;
-        }
+        .btn-edit { color: var(--ink); border-color: var(--ink); background: transparent; }
+        .btn-edit:hover { background: var(--ink); color: var(--paper); }
 
-        .btn-edit {
-            color: var(--ink);
-            border-color: var(--ink);
-            background: transparent;
-        }
-
-        .btn-edit:hover {
-            background: var(--ink);
-            color: var(--paper);
-        }
-
-        /* ── HERO AREA ── */
         .hero {
             position: relative;
             padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem) 0;
@@ -132,15 +100,8 @@
         }
 
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         .post-category {
@@ -173,7 +134,6 @@
             margin-bottom: 2rem;
         }
 
-        /* ── SEARCH FORM ── */
         .search-form {
             display: flex;
             gap: 0.75rem;
@@ -197,9 +157,7 @@
             border-color: var(--accent);
         }
 
-        .search-form input[type="text"]::placeholder {
-            color: var(--muted);
-        }
+        .search-form input[type="text"]::placeholder { color: var(--muted); }
 
         .search-form button {
             padding: 0.85rem 1.6rem;
@@ -229,12 +187,8 @@
             margin-bottom: 0.5rem;
         }
 
-        .search-summary strong {
-            color: var(--ink);
-            font-weight: 500;
-        }
+        .search-summary strong { color: var(--ink); font-weight: 500; }
 
-        /* ── RESULTS ── */
         .content-wrap {
             max-width: 860px;
             margin: 0 auto;
@@ -242,11 +196,7 @@
             animation: fadeUp 0.7s 0.2s ease both;
         }
 
-        .results-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
+        .results-list { display: flex; flex-direction: column; gap: 0; }
 
         .result-card {
             display: grid;
@@ -259,13 +209,8 @@
             transition: opacity 0.2s ease;
         }
 
-        .result-card:hover {
-            opacity: 0.75;
-        }
-
-        .result-card:first-child {
-            padding-top: 0;
-        }
+        .result-card:hover { opacity: 0.75; }
+        .result-card:first-child { padding-top: 0; }
 
         .result-thumb {
             width: 160px;
@@ -283,16 +228,9 @@
             font-weight: 900;
         }
 
-        .result-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+        .result-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        .result-body {
-            min-width: 0;
-        }
+        .result-body { min-width: 0; }
 
         .result-title {
             font-family: 'Playfair Display', serif;
@@ -323,16 +261,9 @@
             color: var(--muted);
         }
 
-        .result-author {
-            font-weight: 500;
-            color: var(--ink);
-        }
+        .result-author { font-weight: 500; color: var(--ink); }
 
-        .result-tags {
-            display: flex;
-            gap: 0.4rem;
-            flex-wrap: wrap;
-        }
+        .result-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
 
         .tag-pill {
             font-size: 0.7rem;
@@ -343,6 +274,99 @@
             border: 1px solid var(--border);
             padding: 0.15rem 0.55rem;
             border-radius: 2px;
+        }
+
+        /* ── PAGINATION ── */
+        .pagination-wrap {
+            max-width: 860px;
+            margin: 3rem auto 0;
+            padding: 2rem clamp(1.5rem, 5vw, 4rem) 0;
+            border-top: 3px solid var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .pagination-info {
+            font-size: 0.68rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .pagination-info strong { color: var(--ink); font-weight: 500; }
+
+        .pagination-nav {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .page-link,
+        .page-current,
+        .page-dots {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-decoration: none;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            margin-left: -1px;
+            transition: all 0.15s ease;
+            position: relative;
+            z-index: 0;
+        }
+
+        .page-link:hover {
+            color: var(--ink);
+            border-color: var(--ink);
+            z-index: 1;
+        }
+
+        .page-current {
+            background: var(--ink);
+            color: var(--paper);
+            border-color: var(--ink);
+            z-index: 2;
+        }
+
+        .page-dots { cursor: default; }
+
+        .page-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0 0.9rem;
+            height: 36px;
+            font-size: 0.65rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--ink);
+            text-decoration: none;
+            border: 1px solid var(--ink);
+            transition: all 0.15s ease;
+        }
+
+        .page-nav-btn:hover {
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .page-nav-btn:hover svg path { stroke: var(--paper); }
+
+        .page-nav-btn.disabled {
+            color: var(--border);
+            border-color: var(--border);
+            pointer-events: none;
         }
 
         /* ── EMPTY STATE ── */
@@ -374,7 +398,6 @@
             margin-bottom: 1.75rem;
         }
 
-        /* ── FOOTER ── */
         footer {
             max-width: 860px;
             margin: 4rem auto 0;
@@ -400,39 +423,22 @@
             transition: color 0.2s;
         }
 
-        .footer-back:hover {
-            color: var(--ink);
-        }
+        .footer-back:hover { color: var(--ink); }
+        .footer-back:hover svg { transform: translateX(-3px); }
+        .footer-back svg { transition: transform 0.2s; }
 
-        .footer-back svg {
-            transition: transform 0.2s;
-        }
-
-        .footer-back:hover svg {
-            transform: translateX(-3px);
-        }
-
-        .footer-copy {
-            font-size: 0.78rem;
-            color: var(--border);
-        }
+        .footer-copy { font-size: 0.78rem; color: var(--border); }
 
         @media (max-width: 540px) {
-            .result-card {
-                grid-template-columns: 1fr;
-            }
-
-            .result-thumb {
-                width: 100%;
-                height: 160px;
-            }
+            .result-card { grid-template-columns: 1fr; }
+            .result-thumb { width: 100%; height: 160px; }
+            .pagination-wrap { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- NAV -->
     <nav>
         <a class="nav-brand" href="{% url 'post_list' %}">The Journal</a>
         <div class="nav-links">
@@ -448,7 +454,6 @@
         </div>
     </nav>
 
-    <!-- HERO -->
     <div class="hero">
         <div class="post-category">Qidiruv</div>
         <h1 class="post-title">
@@ -468,11 +473,10 @@
         {% endif %}
     </div>
 
-    <!-- RESULTS -->
     <div class="content-wrap">
-        {% if posts %}
+        {% if page_obj %}
         <div class="results-list">
-            {% for post in posts %}
+            {% for post in page_obj %}
             <a href="{% url 'post_detail' post.slug %}" class="result-card">
                 <div class="result-thumb">
                     {% if post.image %}
@@ -516,7 +520,68 @@
         {% endif %}
     </div>
 
-    <!-- FOOTER -->
+    {# ── PAGINATION ── #}
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination-wrap">
+
+        <p class="pagination-info">
+            <strong>{{ page_obj.start_index }}–{{ page_obj.end_index }}</strong>
+            / {{ post_count }} ta natija &nbsp;·&nbsp;
+            {{ page_obj.number }}-sahifa
+        </p>
+
+        <nav aria-label="Sahifalar" style="display: flex; align-items: center; gap: 0.75rem;">
+
+            {% if page_obj.has_previous %}
+            <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="page-nav-btn">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                    <path d="M10 7H4M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Oldingi
+            </a>
+            {% else %}
+            <span class="page-nav-btn disabled">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                    <path d="M10 7H4M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Oldingi
+            </span>
+            {% endif %}
+
+            <div class="pagination-nav">
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="page-current" aria-current="page">{{ num }}</span>
+                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                        <a href="?q={{ query }}&page={{ num }}" class="page-link">{{ num }}</a>
+                    {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+                        <a href="?q={{ query }}&page={{ num }}" class="page-link">{{ num }}</a>
+                    {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+                        <span class="page-dots">…</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_next %}
+            <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="page-nav-btn">
+                Keyingi
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                    <path d="M4 7h6M10 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+            {% else %}
+            <span class="page-nav-btn disabled">
+                Keyingi
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                    <path d="M4 7h6M10 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+            {% endif %}
+
+        </nav>
+    </div>
+    {% endif %}
+
     <footer>
         <a href="{% url 'post_list' %}" class="footer-back">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -528,5 +593,4 @@
     </footer>
 
 </body>
-
 </html>

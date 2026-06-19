@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 from .forms import PostForm,CommentForm
 from django.db.models import Q, Count
 from .models import Post, Like
+from django.core.paginator import Paginator
 
 
 User=get_user_model()
@@ -204,7 +205,13 @@ def profile_delete(request):
 
 def post_list(request):
     posts = models.Post.objects.prefetch_related('tags').select_related('author').all()
-    return render(request, 'post_list.html', {'posts': posts})
+
+    paginator = Paginator(posts, 5)  
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'post_list.html', {'page_obj': page_obj})
 
 def post_detail(request, slug):
     post = Post.objects.prefetch_related('tags').select_related('author').get(slug=slug)
@@ -271,24 +278,29 @@ def post_delete(request, slug):
     return render(request, 'post_delete.html', {'post': post})
 
 def search_posts(request):
-    query = request.GET.get('q','')
+    query = request.GET.get('q', '')
     posts = Post.objects.all()
 
     if query:
         posts = posts.filter(
-            Q(title__icontains = query) |
-            Q(content__icontains = query) |
-            Q(tags__name__icontains = query) |
-            Q(author__first_name__icontains = query) |
-            Q(author__last_name__icontains = query)
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query) |
+            Q(author__first_name__icontains=query) |
+            Q(author__last_name__icontains=query)
         ).distinct()
 
+    paginator = Paginator(posts, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'posts':posts,
+        'page_obj': page_obj,
+        'post_count': posts.count(),
         'query':query,
-        'post_count':posts.count(),
     }
-    return render(request, 'search_results.html',context)
+
+    return render(request, 'search_results.html', context)
 
 @login_required
 def like_toggle(request, slug):
@@ -314,6 +326,9 @@ def add_comment(request, slug):
             comment.save()
 
     return redirect('post_detail', slug=post.slug)
+
+
+
 
 
 
